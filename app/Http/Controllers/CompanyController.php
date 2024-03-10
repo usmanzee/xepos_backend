@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\CompanyResource;
 use App\Mail\NewCompanyEmail;
 use App\Models\Company;
+use Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -60,8 +61,9 @@ class CompanyController extends Controller
         }
         $company->website = $request->website;
         $company->save();
+        $fromAddress = Config::get('mail.from.address');
         if($company->email) {
-            Mail::to($company->email)->send(new NewCompanyEmail($company, 'usman.jamil0308@gmail.com', $company->email));
+            Mail::to($company->email)->send(new NewCompanyEmail($company, $fromAddress, $company->email));
         }
 
         return response()->json([
